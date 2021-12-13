@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express();
 const articleRouter = require('./routes/articles');
+const Article = require('./models/article');
+const app = express();
 const PORT = 5000;
 
 mongoose.connect('mongodb://localhost/markdown-blog');
@@ -9,12 +10,8 @@ mongoose.connect('mongodb://localhost/markdown-blog');
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => {
-    const articles = [{
-        title: 'Test Article',
-        createdAt: new Date(),
-        description: 'Test description.'
-    }]
+app.get('/', async (req, res) => {
+    const articles = await Article.find().sort({ createdAt: 'desc' });
     res.render('articles/index', { articles: articles });
 });
 
