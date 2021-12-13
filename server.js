@@ -1,11 +1,13 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const articleRouter = require('./routes/articles');
 const PORT = 5000;
 
-app.set('view engine', 'ejs');
+mongoose.connect('mongodb://localhost/markdown-blog');
 
-app.use('/articles', articleRouter);
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
     const articles = [{
@@ -15,6 +17,8 @@ app.get('/', (req, res) => {
     }]
     res.render('articles/index', { articles: articles });
 });
+
+app.use('/articles', articleRouter);
 
 app.listen(PORT, (error) => {
     if (error) {
